@@ -647,26 +647,29 @@
         }
 
         let photostripFinalWidth;
-        let photostripFinalHeight;
+        // Deteksi lebar viewport untuk menyesuaikan ukuran unduhan
+        if (window.innerWidth <= 768) {
+          // Contoh breakpoint untuk mobile (bisa disesuaikan)
+          photostripFinalWidth = 400; // Ukuran untuk mobile
+          console.log("[DOWNLOAD] Mengunduh untuk Mobile (400px lebar)");
+        } else {
+          photostripFinalWidth = 600; // Ukuran untuk desktop
+          console.log("[DOWNLOAD] Mengunduh untuk Desktop (600px lebar)");
+        }
 
-        // Tentukan lebar akhir photostrip. Gunakan lebar yang lebih kecil untuk mobile.
-        // Lebar 565px dari video-container tampaknya adalah target yang baik untuk lebar photostrip.
-        photostripFinalWidth = 565; 
-
-        // Hitung tinggi setiap frame berdasarkan lebar photostripFinalWidth dan cameraAspectRatio (16:9)
-        const singlePhotoCalculatedHeight = photostripFinalWidth / cameraAspectRatio;
-        
-        // Tinggi total photostrip adalah 4 frame * tinggi setiap frame
-        photostripFinalHeight = singlePhotoCalculatedHeight * 4; 
-        
-        // Anda bisa membulatkan ke bilangan bulat terdekat jika ada masalah rendering piksel
-        // photostripFinalHeight = Math.round(singlePhotoCalculatedHeight * 4);
+        const singlePhotoCalculatedHeight =
+          photostripFinalWidth / cameraAspectRatio;
+        const photostripFinalHeight = singlePhotoCalculatedHeight * 4;
 
         downloadCanvas.width = photostripFinalWidth;
         downloadCanvas.height = photostripFinalHeight;
 
-        console.log(`[DOWNLOAD] Ukuran photostrip akhir: ${photostripFinalWidth}x${photostripFinalHeight}`);
-        console.log(`[DOWNLOAD] Tinggi per foto: ${singlePhotoCalculatedHeight}`);
+        console.log(
+          `[DOWNLOAD] Ukuran photostrip akhir: ${photostripFinalWidth}x${photostripFinalHeight}`
+        );
+        console.log(
+          `[DOWNLOAD] Tinggi per foto: ${singlePhotoCalculatedHeight}`
+        );
 
         downloadCtx.fillStyle = "#FFFFFF"; // Latar belakang putih untuk strip
         downloadCtx.fillRect(0, 0, downloadCanvas.width, downloadCanvas.height);
@@ -677,7 +680,9 @@
         for (let i = 0; i < 3; i++) {
           const src = photoStripImages[i].src;
           if (!src || src.includes("data:,")) {
-            console.warn(`Gambar jepretan ke-${i + 1} kosong atau tidak valid, dilewati.`);
+            console.warn(
+              `Gambar jepretan ke-${i + 1} kosong atau tidak valid, dilewati.`
+            );
             continue;
           }
 
@@ -724,7 +729,9 @@
             img.src = fixedImgSrc;
           });
         } else {
-          console.warn("fixed_bottom_image.png tidak ditemukan atau tidak valid.");
+          console.warn(
+            "fixed_bottom_image.png tidak ditemukan atau tidak valid."
+          );
         }
 
         // Unduh gambar yang sudah digabungkan
